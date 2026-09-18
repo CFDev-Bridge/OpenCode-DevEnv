@@ -1,0 +1,26 @@
+services:
+  opencode:
+    build:
+      context: ./docker
+
+    container_name: opencode
+
+    working_dir: /workspace
+
+    volumes:
+      - ./workspace:/workspace
+
+    stdin_open: true
+    tty: true
+
+    restart: unless-stopped
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+
+    environment:
+      - HOME=/home/developer
+      - TERM=xterm-256color

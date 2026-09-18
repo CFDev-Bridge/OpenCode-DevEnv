@@ -1,0 +1,14 @@
+# Proyectos y archivos de trabajo de OpenCode
+/workspace/*
+
+# Mantener la carpeta workspace en el repositorio
+!/workspace/.gitkeep
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Variables de entorno / secretos
+.env
+.env.*
+!.env.example
