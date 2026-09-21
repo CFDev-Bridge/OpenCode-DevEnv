@@ -15,15 +15,17 @@ El repositorio contiene únicamente la configuración necesaria para reconstruir
 - Python 3 disponible.
 - Docker Compose para administrar el entorno.
 - OpenCode ejecutándose con el usuario `developer`.
-- Workspace persistente mediante bind mount.
+- Workspace compartido mediante **bind mount**.
 - Proyectos de trabajo excluidos del control de versiones.
+- Configuración del entorno versionada mediante Git.
+- Posibilidad de reconstruir el entorno en otra computadora.
 
 ---
 
 ## 🏗️ Estructura del proyecto
 
 ```text
-ProyectosOpenCode/
+OpenCode-DevEnv/
 │
 ├── docker/
 │   └── Dockerfile
@@ -40,10 +42,10 @@ ProyectosOpenCode/
 
 | Archivo / carpeta | Descripción |
 |---|---|
-| `docker/Dockerfile` | Define la imagen del entorno OpenCode. |
-| `docker-compose.yml` | Define y administra el contenedor. |
+| `docker/Dockerfile` | Define la imagen del entorno de desarrollo. |
+| `docker-compose.yml` | Define y administra el contenedor OpenCode. |
 | `workspace/` | Espacio de trabajo utilizado por OpenCode. |
-| `.gitignore` | Evita subir los proyectos de trabajo al repositorio. |
+| `.gitignore` | Evita versionar los proyectos y archivos de trabajo. |
 | `README.md` | Documentación del entorno. |
 
 ---
@@ -54,9 +56,19 @@ Antes de utilizar el entorno se necesita instalar:
 
 - **Git**
 - **Docker Desktop**
-- Una cuenta de GitHub, si se desea trabajar con el repositorio remoto.
+- Una cuenta de GitHub, si se desea utilizar el repositorio remoto.
 
 Docker Desktop debe estar iniciado antes de ejecutar los comandos de Docker.
+
+### GitHub mediante SSH
+
+El repositorio utiliza una URL SSH:
+
+```text
+git@github.com:CFDev-Bridge/OpenCode-DevEnv.git
+```
+
+Por lo tanto, para clonar y utilizar el repositorio mediante SSH, es necesario tener configurada una clave SSH para GitHub.
 
 ---
 
@@ -64,7 +76,7 @@ Docker Desktop debe estar iniciado antes de ejecutar los comandos de Docker.
 
 El entorno utiliza un **bind mount** entre una carpeta de Windows y el contenedor.
 
-La configuración utilizada es:
+La relación entre ambas ubicaciones es:
 
 ```text
 Windows
@@ -75,11 +87,7 @@ Docker
 /workspace
 ```
 
-Por esta razón, Docker Desktop debe tener autorizada la carpeta:
-
-```text
-C:\ProyectosOpenCode
-```
+Por esta razón, Docker Desktop debe tener acceso a la ubicación donde se encuentra el proyecto.
 
 ### Configurar File Sharing
 
@@ -99,13 +107,13 @@ Verificar que aparezca:
 C:\ProyectosOpenCode
 ```
 
-Docker podrá utilizar esta carpeta y sus subdirectorios para realizar bind mounts.
+De esta manera, Docker podrá utilizar esta carpeta y sus subdirectorios para realizar el bind mount.
 
-> **Nota:** Si el repositorio se clona en una ubicación diferente, esa nueva ubicación deberá estar autorizada en Docker Desktop cuando sea necesario realizar bind mounts desde Windows.
+> **Nota:** Si el repositorio se clona en otra ubicación de Windows, esa nueva ubicación puede requerir autorización en Docker Desktop para utilizar bind mounts.
 
 ---
 
-# 📥 Clonar el proyecto
+# 📥 Clonar el repositorio
 
 Desde Git Bash:
 
@@ -116,20 +124,26 @@ cd C:\
 Clonar el repositorio:
 
 ```bash
-git clone git@github.com:CFDev-Bridge/ProyectosOpenCode.git
+git clone git@github.com:CFDev-Bridge/OpenCode-DevEnv.git
 ```
 
 Ingresar al proyecto:
 
 ```bash
-cd C:\ProyectosOpenCode
+cd C:\OpenCode-DevEnv
 ```
+
+> Si se desea mantener específicamente la ubicación `C:\ProyectosOpenCode`, se puede clonar indicando el directorio de destino:
+>
+> ```bash
+> git clone git@github.com:CFDev-Bridge/OpenCode-DevEnv.git C:\ProyectosOpenCode
+> ```
 
 ---
 
 # 🚀 Iniciar el entorno
 
-Una vez instalado Docker Desktop y configurado File Sharing, ejecutar:
+Desde la carpeta del proyecto:
 
 ```bash
 cd C:\ProyectosOpenCode
@@ -141,7 +155,11 @@ Levantar el entorno:
 docker compose up -d
 ```
 
-> La primera vez, Docker Compose puede construir la imagen definida en `docker/Dockerfile`.
+La primera vez, Docker Compose construirá la imagen definida en:
+
+```text
+docker/Dockerfile
+```
 
 Ingresar al contenedor:
 
@@ -149,9 +167,27 @@ Ingresar al contenedor:
 docker exec -it opencode bash
 ```
 
-Iniciar OpenCode:
+Una vez dentro del contenedor, ejecutar:
 
 ```bash
+opencode
+```
+
+El flujo completo es:
+
+```text
+Docker Desktop
+      │
+      ▼
+docker compose up -d
+      │
+      ▼
+Contenedor OpenCode
+      │
+      ▼
+docker exec -it opencode bash
+      │
+      ▼
 opencode
 ```
 
@@ -168,48 +204,44 @@ docker exec -it opencode bash
 opencode
 ```
 
-El flujo es:
+Los proyectos de trabajo se crean dentro de:
 
 ```text
-Docker Desktop
-      ↓
-docker compose up -d
-      ↓
-Contenedor OpenCode
-      ↓
-docker exec -it opencode bash
-      ↓
-opencode
+/workspace
+```
+
+y se almacenan físicamente en:
+
+```text
+C:\ProyectosOpenCode\workspace
 ```
 
 ---
 
 # 📂 Workspace
 
-Dentro del contenedor, OpenCode trabaja en:
+El directorio de trabajo dentro del contenedor es:
 
 ```text
 /workspace
 ```
 
-Esta carpeta corresponde a:
+Este directorio está vinculado mediante un **bind mount** con:
 
 ```text
 C:\ProyectosOpenCode\workspace
 ```
 
-en Windows.
-
-Por lo tanto:
+La relación es:
 
 ```text
-Windows                         Contenedor
-────────────────────────────────────────────
+Windows                              Contenedor
+───────────────────────────────────────────────
 C:\ProyectosOpenCode\
-└── workspace\       <───────>  /workspace
+└── workspace\       <────────────>  /workspace
 ```
 
-Los archivos creados o modificados dentro de `/workspace` permanecen físicamente en la carpeta `workspace` de Windows.
+Por lo tanto, los archivos creados o modificados por OpenCode dentro de `/workspace` permanecen físicamente en la computadora anfitriona.
 
 ---
 
@@ -217,19 +249,19 @@ Los archivos creados o modificados dentro de `/workspace` permanecen físicament
 
 El repositorio está diseñado para **versionar el entorno de OpenCode, no los proyectos de trabajo**.
 
-El archivo `.gitignore` excluye:
+El archivo `.gitignore` excluye todo el contenido de:
 
 ```text
 /workspace/*
 ```
 
-pero mantiene:
+pero conserva:
 
 ```text
 workspace/.gitkeep
 ```
 
-Esto permite que Git conserve la carpeta `workspace/` aunque se encuentre vacía.
+Esto permite que Git mantenga la carpeta `workspace/` dentro de la estructura del repositorio aunque se encuentre vacía.
 
 ### Ejemplo
 
@@ -244,7 +276,7 @@ workspace/
 
 estos proyectos **no serán incluidos en Git**.
 
-El repositorio mantiene únicamente los archivos necesarios para reconstruir el entorno, por ejemplo:
+El repositorio mantiene únicamente los archivos necesarios para reconstruir el entorno:
 
 ```text
 docker/
@@ -253,6 +285,16 @@ docker-compose.yml
 README.md
 workspace/.gitkeep
 ```
+
+### ⚠️ Importante
+
+Antes de realizar un commit, se recomienda revisar siempre:
+
+```bash
+git status
+```
+
+para verificar qué archivos serán incluidos en el control de versiones.
 
 ---
 
@@ -272,19 +314,19 @@ exit
 
 Esto devuelve la terminal al sistema anfitrión.
 
-> Salir del contenedor no significa necesariamente detenerlo. El contenedor puede continuar ejecutándose en segundo plano.
+> Salir del contenedor no necesariamente significa detenerlo. El contenedor puede continuar ejecutándose en segundo plano.
 
 ---
 
-# ⏸️ Detener el entorno temporalmente
+# ⏸️ Detener temporalmente el entorno
 
-Si se desea detener los contenedores sin eliminarlos:
+Para detener el contenedor sin eliminarlo:
 
 ```bash
 docker compose stop
 ```
 
-Posteriormente pueden iniciarse nuevamente con:
+Para iniciarlo nuevamente:
 
 ```bash
 docker compose start
@@ -292,26 +334,48 @@ docker compose start
 
 ---
 
-# ⏹️ Apagar completamente el entorno
+# ⏹️ Apagar el entorno
 
-Si se desea detener y eliminar los contenedores creados por Docker Compose:
+Para detener y eliminar los contenedores administrados por Docker Compose:
 
 ```bash
 docker compose down
 ```
 
-Los archivos del `workspace` **no se eliminan**, ya que se encuentran almacenados físicamente en Windows.
+Los archivos almacenados en:
+
+```text
+C:\ProyectosOpenCode\workspace
+```
+
+**no se eliminan**, porque se encuentran físicamente en Windows y están vinculados mediante un bind mount.
 
 ---
 
-# 🔁 Volver a iniciar después de apagarlo
+# 🔁 Volver a iniciar el entorno
 
-Cuando se necesite utilizar nuevamente el entorno:
+Después de utilizar:
+
+```bash
+docker compose down
+```
+
+el entorno puede iniciarse nuevamente con:
 
 ```bash
 cd C:\ProyectosOpenCode
 docker compose up -d
+```
+
+Después:
+
+```bash
 docker exec -it opencode bash
+```
+
+y:
+
+```bash
 opencode
 ```
 
@@ -319,19 +383,21 @@ opencode
 
 # 🔧 Reconstruir el entorno
 
-Si se modifica el `Dockerfile` y es necesario reconstruir la imagen:
+Si se modifica el `Dockerfile`, es necesario reconstruir la imagen.
+
+Se puede hacer con:
 
 ```bash
 docker compose build
 ```
 
-Luego:
+y posteriormente:
 
 ```bash
 docker compose up -d
 ```
 
-También se puede realizar directamente:
+O directamente:
 
 ```bash
 docker compose up -d --build
@@ -339,23 +405,25 @@ docker compose up -d --build
 
 ---
 
-# 🔄 Actualizar el entorno desde Git
+# 🔄 Actualizar el entorno desde GitHub
 
-Si el repositorio tiene cambios nuevos en GitHub:
+Si existen cambios nuevos en el repositorio remoto:
 
 ```bash
 git pull
 ```
 
-Después, si se modificó el `Dockerfile` o `docker-compose.yml`, reconstruir el entorno:
+Si se modificó el `Dockerfile` o `docker-compose.yml`, reconstruir el entorno:
 
 ```bash
 docker compose up -d --build
 ```
 
+> Si existen cambios locales sin commit, revisarlos con `git status` antes de ejecutar `git pull`.
+
 ---
 
-# 🧩 Comandos útiles
+# 🧩 Comandos útiles de Docker
 
 ### Ver contenedores ejecutándose
 
@@ -369,7 +437,7 @@ docker ps
 docker ps -a
 ```
 
-### Ver el estado del entorno
+### Ver el estado del proyecto Compose
 
 ```bash
 docker compose ps
@@ -399,16 +467,62 @@ docker compose restart
 docker compose stop
 ```
 
-### Iniciar nuevamente un entorno detenido
+### Iniciar un entorno detenido
 
 ```bash
 docker compose start
 ```
 
-### Apagar y eliminar los contenedores
+### Detener y eliminar los contenedores
 
 ```bash
 docker compose down
+```
+
+---
+
+# 🌿 Comandos básicos de Git
+
+### Ver el estado del repositorio
+
+```bash
+git status
+```
+
+### Ver las ramas
+
+```bash
+git branch
+```
+
+### Cambiar de rama
+
+```bash
+git switch main
+```
+
+o:
+
+```bash
+git switch desarrollo
+```
+
+### Ver el historial resumido
+
+```bash
+git log --oneline --graph --all
+```
+
+### Descargar cambios de GitHub
+
+```bash
+git pull
+```
+
+### Subir commits a GitHub
+
+```bash
+git push
 ```
 
 ---
@@ -417,7 +531,7 @@ docker compose down
 
 OpenCode se ejecuta dentro de un contenedor independiente.
 
-El contenedor utiliza:
+El entorno incluye:
 
 - Ubuntu 24.04.
 - Usuario `developer`.
@@ -426,61 +540,116 @@ El contenedor utiliza:
 - Python 3.
 - OpenCode.
 
-La configuración del contenedor está definida en:
+La configuración de la imagen está definida en:
 
 ```text
 docker/Dockerfile
 ```
 
-La administración del servicio está definida en:
+La configuración del servicio está definida en:
 
 ```text
 docker-compose.yml
 ```
 
-El objetivo es poder reconstruir el entorno en otra computadora sin tener que realizar nuevamente toda la configuración manual de OpenCode.
+El objetivo es mantener separada la configuración del entorno respecto de los proyectos desarrollados dentro de `workspace/`.
 
 ---
 
-# ⚠️ Importante
+# ⚠️ Docker no está instalado dentro del contenedor
 
 Este proyecto **no instala Docker dentro del contenedor OpenCode**.
 
-Docker Desktop permanece instalado en el sistema anfitrión y es quien administra el contenedor.
+Docker Desktop permanece instalado en el **sistema anfitrión** y es responsable de administrar el contenedor.
 
-OpenCode puede crear y modificar archivos del proyecto dentro de:
+Dentro del contenedor, OpenCode puede crear y modificar archivos dentro de:
 
 ```text
 /workspace
 ```
 
-pero el comando:
+Sin embargo, el comando:
 
 ```bash
 docker
 ```
 
-no forma parte del entorno interno de OpenCode.
+no forma parte de la imagen definida en `docker/Dockerfile`.
 
-Por lo tanto, las operaciones de Docker se ejecutan normalmente desde la terminal del sistema anfitrión.
+Por lo tanto, las operaciones de Docker se ejecutan desde Git Bash o desde otra terminal del sistema anfitrión.
+
+### Ejemplo
+
+Desde Windows:
+
+```bash
+docker ps
+docker compose up -d
+docker compose down
+```
+
+Mientras que dentro del contenedor se ejecutan herramientas como:
+
+```bash
+git
+python3
+node
+npm
+opencode
+```
+
+---
+
+# 🔐 Archivos sensibles
+
+El repositorio incluye reglas para evitar versionar archivos de configuración que puedan contener información sensible.
+
+Entre ellas:
+
+```text
+.env
+.env.*
+```
+
+No se deben almacenar directamente en Git:
+
+- Contraseñas.
+- Tokens.
+- API keys.
+- Claves privadas.
+- Credenciales.
+- Archivos `.env` con información sensible.
+
+Antes de realizar un commit se recomienda revisar:
+
+```bash
+git status
+```
+
+y, cuando sea necesario, revisar los cambios con:
+
+```bash
+git diff
+```
 
 ---
 
 # 📌 Resumen rápido
 
-### Primera configuración
+## Primera configuración
 
 ```text
 1. Instalar Git.
 2. Instalar Docker Desktop.
-3. Agregar C:\ProyectosOpenCode a File Sharing.
-4. Clonar el repositorio.
-5. Levantar Docker Compose.
-6. Entrar al contenedor.
-7. Ejecutar OpenCode.
+3. Configurar File Sharing si es necesario.
+4. Configurar SSH para GitHub.
+5. Clonar el repositorio.
+6. Levantar Docker Compose.
+7. Entrar al contenedor.
+8. Ejecutar OpenCode.
 ```
 
-### Uso diario
+## Uso diario
 
 ```bash
 cd C:\ProyectosOpenCode
@@ -489,27 +658,53 @@ docker exec -it opencode bash
 opencode
 ```
 
-### Salir
+## Salir
 
 ```text
 Ctrl + C
 exit
 ```
 
-### Detener temporalmente
+## Detener temporalmente
 
 ```bash
 docker compose stop
 ```
 
-### Apagar completamente
+## Iniciar nuevamente
+
+```bash
+docker compose start
+```
+
+## Apagar completamente
 
 ```bash
 docker compose down
 ```
 
+## Reconstruir
+
+```bash
+docker compose up -d --build
+```
+
+## Actualizar desde GitHub
+
+```bash
+git pull
+```
+
 ---
 
-## 🎯 Objetivo del proyecto
+# 🎯 Objetivo del proyecto
 
-Mantener un **entorno OpenCode reproducible, aislado y versionado mediante Git**, permitiendo reconstruir la configuración del entorno en otra computadora sin versionar los proyectos de trabajo desarrollados dentro de `workspace/`.
+Mantener un **entorno OpenCode reproducible, aislado y versionado mediante Git**, permitiendo reconstruir la configuración del entorno en otra computadora sin necesidad de realizar nuevamente toda la configuración manual.
+
+Los proyectos de trabajo permanecen fuera del control de versiones dentro de:
+
+```text
+workspace/
+```
+
+De esta manera, el repositorio contiene la **infraestructura y configuración del entorno**, mientras que los proyectos desarrollados con OpenCode permanecen separados.
