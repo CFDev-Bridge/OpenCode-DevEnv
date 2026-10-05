@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Christian Nuñez</title>
+<meta name="description" content="Portafolio de Christian Nuñez, Software Engineer enfocado en Big Data, Data Science, IA y desarrollo de software.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: columna editorial de ~68rem; hero con un gráfico de clústeres a la derecha,
+   secciones apiladas con etiqueta en mono a la izquierda y contenido a la derecha. */
+:root {
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --fg: #131a2a;
+  --muted: #586179;
+  --line: #d9dee8;
+  --accent: #2945c9;
+  --accent-soft: #e3e8fb;
+  --c1: #2945c9;
+  --c2: #d08a1f;
+  --c3: #1f8a74;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1220; --surface: #141b2d; --fg: #e5e9f2; --muted: #98a2bb; --line: #263049;
+    --accent: #8b9dff; --accent-soft: #1d2648; --c1: #8b9dff; --c2: #f0b356; --c3: #4fc7a8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #141b2d; --fg: #e5e9f2; --muted: #98a2bb; --line: #263049;
+  --accent: #8b9dff; --accent-soft: #1d2648; --c1: #8b9dff; --c2: #f0b356; --c3: #4fc7a8;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 1rem/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: 68rem; margin: 0 auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+
+/* Navegación */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .8rem; }
+.brand { font: 700 1.05rem/1 var(--display); color: var(--fg); text-decoration: none; letter-spacing: -.01em; }
+.nav ul { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; list-style: none; margin: 0; padding: 0; font: 500 .8rem/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.nav ul a { color: var(--muted); text-decoration: none; }
+.nav ul a:hover { color: var(--fg); }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4.5rem); }
+.hero > * { min-width: 0; }
+.eyebrow { font: 500 .78rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 1rem; }
+.eyebrow .dot { display: inline-block; width: .5rem; height: .5rem; border-radius: 50%; background: var(--c3); margin-right: .5rem; vertical-align: .05rem; }
+h1 { font: 700 clamp(2.6rem, 6.5vw, 4.6rem)/1 var(--display); letter-spacing: -.035em; margin: 0 0 1.25rem; text-wrap: balance; }
+h1 .role { display: block; font-weight: 500; color: var(--muted); font-size: .48em; letter-spacing: -.015em; margin-top: .6rem; line-height: 1.15; }
+.lede { font-size: 1.12rem; max-width: 36rem; margin: 0 0 1.75rem; color: var(--fg); }
+.cta { display: flex; flex-wrap: wrap; gap: .75rem; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .7rem 1.1rem; border-radius: 8px; font: 500 .95rem/1 var(--body); text-decoration: none; border: 1px solid var(--line); color: var(--fg); background: var(--surface); transition: border-color .15s, transform .15s; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn svg { width: 1.05rem; height: 1.05rem; fill: currentColor; }
+
+.plot { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1rem .75rem; }
+.plot canvas { display: block; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; }
+.plot figcaption { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font: 400 .75rem/1.4 var(--mono); color: var(--muted); padding-top: .6rem; border-top: 1px solid var(--line); margin-top: .6rem; }
+.legend { display: flex; gap: .9rem; flex-wrap: wrap; }
+.legend i { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; margin-right: .35rem; vertical-align: .02rem; }
+
+/* Secciones */
+section.block { display: grid; grid-template-columns: 12rem 1fr; gap: 1.5rem 2.5rem; padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+section.block > * { min-width: 0; }
+.label { font: 500 .78rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: .45rem 0 0; }
+h2 { font: 700 clamp(1.6rem, 3.2vw, 2.2rem)/1.15 var(--display); letter-spacing: -.02em; margin: 0 0 1rem; text-wrap: balance; }
+h3 { font: 700 1.15rem/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 .4rem; }
+p { margin: 0 0 1rem; max-width: 40rem; }
+.muted { color: var(--muted); }
+
+/* Áreas de enfoque */
+.areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.area { padding: 1.4rem 1.5rem; border-bottom: 1px solid var(--line); }
+.area:nth-child(odd) { border-right: 1px solid var(--line); }
+.area:nth-last-child(-n+2) { border-bottom: 0; }
+.area .tag { font: 500 .72rem/1 var(--mono); color: var(--accent); letter-spacing: .05em; margin-bottom: .7rem; display: block; }
+.area p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+/* Habilidades */
+.skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.75rem; }
+.skills h3 { font: 500 .78rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .8rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none; margin: 0; padding: 0; }
+.chips li { font: 500 .85rem/1 var(--body); padding: .45rem .7rem; border-radius: 6px; background: var(--accent-soft); color: var(--fg); }
+
+/* Proyecto destacado */
+.project { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.project-head { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.project-head h3 { font-size: 1.45rem; margin: 0; }
+.pill { font: 500 .72rem/1 var(--mono); padding: .4rem .6rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.project-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1rem 1.5rem 1.5rem; }
+.project-body > * { min-width: 0; }
+.specs { list-style: none; margin: 0; padding: 0; font-size: .92rem; }
+.specs li { display: grid; grid-template-columns: 8.5rem 1fr; gap: .75rem; padding: .55rem 0; border-bottom: 1px dashed var(--line); }
+.specs li:last-child { border-bottom: 0; }
+.specs span:first-child { font: 400 .78rem/1.6 var(--mono); color: var(--muted); }
+pre.term { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; overflow-x: auto; font: 400 .82rem/1.7 var(--mono); color: var(--fg); }
+pre.term .c { color: var(--muted); }
+pre.term .p { color: var(--c3); }
+.project-foot { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; padding: 1rem 1.5rem; border-top: 1px solid var(--line); font-size: .92rem; }
+
+/* Contacto */
+.contact-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .5rem; }
+
+footer { border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 1.75rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; font: 400 .78rem/1.4 var(--mono); color: var(--muted); }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+  section.block { grid-template-columns: 1fr; gap: .5rem; }
+  .skills { grid-template-columns: 1fr 1fr; }
+  .project-body { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .nav ul { display: none; }
+  .areas { grid-template-columns: 1fr; }
+  .area:nth-child(odd) { border-right: 0; }
+  .area:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+  .skills { grid-template-columns: 1fr; }
+  .specs li { grid-template-columns: 1fr; gap: .1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#inicio">Christian Nuñez</a>
+    <ul>
+      <li><a href="#enfoque">Enfoque</a></li>
+      <li><a href="#habilidades">Habilidades</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap" id="inicio">
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow"><span class="dot"></span>Portafolio · Software Engineer</p>
+      <h1>Christian Nuñez
+        <span class="role">Software Engineer · Big Data, Data Science e IA</span>
+      </h1>
+      <p class="lede">Construyo software que convierte datos en decisiones: desde los entornos y pipelines donde viven los datos hasta los modelos que los interpretan.</p>
+      <div class="cta">
+        <a class="btn primary" href="#proyectos">Ver proyectos</a>
+        <a class="btn" href="https://github.com/CFDev-Bridge" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <figure class="plot" aria-label="Gráfico decorativo: puntos de datos agrupados en tres clústeres">
+      <canvas id="clusters" width="560" height="420"></canvas>
+      <figcaption>
+        <span>k-means · k = 3 · n = 180</span>
+        <span class="legend">
+          <span><i style="background:var(--c1)"></i>software</span>
+          <span><i style="background:var(--c2)"></i>datos</span>
+          <span><i style="background:var(--c3)"></i>IA</span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <section class="block" id="enfoque">
+    <p class="label">Enfoque</p>
+    <div>
+      <h2>Cuatro áreas, un mismo objetivo: software útil construido sobre datos confiables.</h2>
+      <div class="areas">
+        <div class="area">
+          <span class="tag">BIG DATA</span>
+          <h3>Datos a escala</h3>
+          <p>Ingesta, almacenamiento y procesamiento de grandes volúmenes de datos de forma eficiente y reproducible.</p>
+        </div>
+        <div class="area">
+          <span class="tag">DATA SCIENCE</span>
+          <h3>Análisis y modelado</h3>
+          <p>Exploración, limpieza y modelado estadístico para encontrar patrones y responder preguntas concretas.</p>
+        </div>
+        <div class="area">
+          <span class="tag">IA</span>
+          <h3>Inteligencia artificial</h3>
+          <p>Modelos de machine learning y herramientas de IA aplicadas, incluidos agentes de programación como OpenCode.</p>
+        </div>
+        <div class="area">
+          <span class="tag">SOFTWARE</span>
+          <h3>Ingeniería de software</h3>
+          <p>Código mantenible, entornos aislados con Docker y control de versiones disciplinado con Git.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="habilidades">
+    <p class="label">Habilidades</p>
+    <div>
+      <h2>Herramientas con las que trabajo</h2>
+      <div class="skills">
+        <div>
+          <h3>Datos e IA</h3>
+          <ul class="chips">
+            <li>Python</li><li>Ciencia de datos</li><li>Machine Learning</li><li>Big Data</li><li>Agentes de IA</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Desarrollo</h3>
+          <ul class="chips">
+            <li>Node.js</li><li>JavaScript</li><li>Bash</li><li>HTML y CSS</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Infraestructura</h3>
+          <ul class="chips">
+            <li>Docker</li><li>Docker Compose</li><li>Linux / Ubuntu</li><li>Git y GitHub</li><li>SSH</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="proyectos">
+    <p class="label">Proyectos</p>
+    <div>
+      <h2>Proyecto destacado</h2>
+      <article class="project">
+        <div class="project-head">
+          <div>
+            <h3>OpenCode-DevEnv</h3>
+            <p class="muted" style="margin:.35rem 0 0">Entorno de desarrollo reproducible para OpenCode, aislado mediante Docker y gestionado con Git.</p>
+          </div>
+          <span class="pill">Dockerfile · 2026</span>
+        </div>
+        <div class="project-body">
+          <ul class="specs">
+            <li><span>Base</span><span>Ubuntu 24.04 con Node.js 22 LTS, Python 3 y Git</span></li>
+            <li><span>Seguridad</span><span>Usuario sin privilegios, <code>cap_drop: ALL</code> y <code>no-new-privileges</code></span></li>
+            <li><span>Persistencia</span><span>Workspace por bind mount: los proyectos sobreviven al contenedor</span></li>
+            <li><span>Versionado</span><span>Solo se versiona el entorno; los proyectos de trabajo quedan fuera de Git</span></li>
+          </ul>
+<pre class="term"><span class="c"># levantar el entorno</span>
+<span class="p">$</span> docker compose up -d
+<span class="p">$</span> docker exec -it opencode bash
+<span class="p">$</span> opencode
+
+<span class="c"># reconstruir tras cambiar el Dockerfile</span>
+<span class="p">$</span> docker compose up -d --build</pre>
+        </div>
+        <div class="project-foot">
+          <a href="https://github.com/CFDev-Bridge/OpenCode-DevEnv" target="_blank" rel="noopener">Ver repositorio en GitHub →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="contacto">
+    <p class="label">Contacto</p>
+    <div>
+      <h2>¿Hablamos de datos, IA o software?</h2>
+      <p>Estoy abierto a colaborar en proyectos de datos, inteligencia artificial y desarrollo de software. La forma más rápida de ver mi trabajo es mi perfil de GitHub.</p>
+      <div class="contact-row">
+        <a class="btn primary" href="https://github.com/CFDev-Bridge" target="_blank" rel="noopener">github.com/CFDev-Bridge</a>
+        <!-- Agrega aquí tu correo o LinkedIn, por ejemplo:
+        <a class="btn" href="https://www.linkedin.com/in/tu-usuario" target="_blank" rel="noopener">LinkedIn</a>
+        -->
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year">2026</span> Christian Nuñez</span>
+    <span>Hecho con HTML, CSS y un poco de k-means</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var y = document.getElementById("year");
+  if (y) y.textContent = new Date().getFullYear();
+
+  var canvas = document.getElementById("clusters");
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext("2d");
+  var W = canvas.width, H = canvas.height;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Generador pseudoaleatorio con semilla: el gráfico es igual en cada carga.
+  var seed = 7;
+  function rand() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  function gauss() { var u = rand() || 1e-6, v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+  var centers = [
+    { x: W * 0.28, y: H * 0.36 },
+    { x: W * 0.70, y: H * 0.30 },
+    { x: W * 0.52, y: H * 0.72 }
+  ];
+  var points = [];
+  for (var k = 0; k < 3; k++) {
+    for (var i = 0; i < 60; i++) {
+      var tx = centers[k].x + gauss() * W * 0.075;
+      var ty = centers[k].y + gauss() * H * 0.08;
+      points.push({ k: k, tx: tx, ty: ty, sx: rand() * W, sy: rand() * H });
+    }
+  }
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function draw(t) {
+    var cols = [css("--c1"), css("--c2"), css("--c3")];
+    var grid = css("--line"), fg = css("--muted");
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.strokeStyle = grid; ctx.lineWidth = 1;
+    for (var gx = 0; gx <= W; gx += W / 8) { ctx.beginPath(); ctx.moveTo(gx + .5, 0); ctx.lineTo(gx + .5, H); ctx.stroke(); }
+    for (var gy = 0; gy <= H; gy += H / 6) { ctx.beginPath(); ctx.moveTo(0, gy + .5); ctx.lineTo(W, gy + .5); ctx.stroke(); }
+
+    var e = t < 1 ? 1 - Math.pow(1 - t, 3) : 1;
+    points.forEach(function (p) {
+      var x = p.sx + (p.tx - p.sx) * e, y = p.sy + (p.ty - p.sy) * e;
+      ctx.globalAlpha = 0.25 + 0.6 * e;
+      ctx.fillStyle = e < 0.5 ? fg : cols[p.k];
+      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (e > 0.85) {
+      centers.forEach(function (c, i) {
+        ctx.strokeStyle = cols[i]; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(c.x - 9, c.y - 9); ctx.lineTo(c.x + 9, c.y + 9);
+        ctx.moveTo(c.x + 9, c.y - 9); ctx.lineTo(c.x - 9, c.y + 9); ctx.stroke();
+      });
+    }
+  }
+
+  if (reduce) { draw(1); }
+  else {
+    var start = null;
+    (function frame(ts) {
+      if (start === null) start = ts;
+      var t = Math.min((ts - start) / 1600, 1);
+      draw(t);
+      if (t < 1) requestAnimationFrame(frame);
+    })(performance.now());
+  }
+
+  // Redibuja al cambiar el tema.
+  var mq = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq && mq.addEventListener) mq.addEventListener("change", function () { draw(1); });
+  new MutationObserver(function () { draw(1); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>
