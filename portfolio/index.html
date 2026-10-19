@@ -129,6 +129,8 @@ pre.term .p { color: var(--c3); }
 
 /* Contacto */
 .contact-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .5rem; }
+.btn.email { user-select: all; overflow-wrap: anywhere; }
+button.btn { cursor: pointer; }
 
 footer { border-top: 1px solid var(--line); }
 footer .wrap { padding-block: 1.75rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; font: 400 .78rem/1.4 var(--mono); color: var(--muted); }
@@ -288,10 +290,12 @@ footer .wrap { padding-block: 1.75rem; display: flex; justify-content: space-bet
     <p class="label">Contacto</p>
     <div>
       <h2>¿Hablamos de datos, IA o software?</h2>
-      <p>Estoy abierto a colaborar en proyectos de datos, inteligencia artificial y desarrollo de software. La forma más rápida de ver mi trabajo es mi perfil de GitHub.</p>
+      <p>Estoy abierto a colaborar en proyectos de datos, inteligencia artificial y desarrollo de software. Escríbeme al correo o revisa mi trabajo en GitHub.</p>
       <div class="contact-row">
-        <a class="btn primary" href="https://github.com/CFDev-Bridge" target="_blank" rel="noopener">github.com/CFDev-Bridge</a>
-        <!-- Agrega aquí tu correo o LinkedIn, por ejemplo:
+        <a class="btn primary email" href="mailto:christian.nunez.dev.ds@gmail.com">christian.nunez.dev.ds@gmail.com</a>
+        <button class="btn" type="button" id="copy-email">Copiar correo</button>
+        <a class="btn" href="https://github.com/CFDev-Bridge" target="_blank" rel="noopener">github.com/CFDev-Bridge</a>
+        <!-- Agrega aquí tu LinkedIn, por ejemplo:
         <a class="btn" href="https://www.linkedin.com/in/tu-usuario" target="_blank" rel="noopener">LinkedIn</a>
         -->
       </div>
@@ -311,6 +315,15 @@ footer .wrap { padding-block: 1.75rem; display: flex; justify-content: space-bet
 (function () {
   var y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
+
+  var copyBtn = document.getElementById("copy-email");
+  if (copyBtn) copyBtn.addEventListener("click", function () {
+    var email = "christian.nunez.dev.ds@gmail.com";
+    function done(msg) { copyBtn.textContent = msg; setTimeout(function () { copyBtn.textContent = "Copiar correo"; }, 2000); }
+    try {
+      navigator.clipboard.writeText(email).then(function () { done("Copiado"); }, function () { done("Selecciona el correo y cópialo"); });
+    } catch (e) { done("Selecciona el correo y cópialo"); }
+  });
 
   var canvas = document.getElementById("clusters");
   if (!canvas || !canvas.getContext) return;
